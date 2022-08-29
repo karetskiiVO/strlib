@@ -7,13 +7,14 @@
 #include <assert.h>
 
 #define NULLBYTE '\0'
-#define EOF -1
 
 String Init (int len) {
     return (String)malloc(len * sizeof(char));
 }
 
 int strLen (const String str) {
+    assert(str != NULL && "the string mustnt be NULL\n");
+
     String str_buf = str;
 
     while (*str_buf != NULLBYTE) {
@@ -24,16 +25,22 @@ int strLen (const String str) {
 }
 
 String strCpy (String s1, const String s2) {
-    int s2len = strLen(s2);
+    assert(s1 != NULL && s2 != NULL && "the string mustnt be NULL\n");
 
-    for (int i = 0; i < s2len; i++) {
+    int i = 0;
+
+    for (i = 0; s2[i] != NULLBYTE; i++) {
         s1[i] = s2[i];
     }
+
+    s1[++i] = NULLBYTE;
 
     return s1;
 }
 
 char* strChr (const String str, int ch) {
+    assert(str != NULL && "the string mustnt be NULL\n");
+    
     char* ptr = NULL;
     int strl = strLen(str);
     
@@ -47,6 +54,8 @@ char* strChr (const String str, int ch) {
 }
 
 char* strrChr (const String str, int ch) {
+    assert(str != NULL && "the string mustnt be NULL\n");
+
     char* ptr = NULL;
     int strl = strLen(str) - 1;
     
@@ -60,25 +69,15 @@ char* strrChr (const String str, int ch) {
 }
 
 int strCmp (const String s1, const String s2) {
-    int l1 = strLen(s1);
-    int l2 = strLen(s2);
+    assert(s1 != NULL && s2 != NULL && "the string mustnt be NULL\n");
 
-    int l = min(l1, l2);
-
-    for (int i = 0; i < l; i++) {
-        if (s1[i] < s2[i]) {
-            return -1;
+    for (int i = 0; s1[i] != NULLBYTE || s2[i] != NULLBYTE; i++) {
+        if (!(s1[i] != NULLBYTE && s2[i] != NULLBYTE)) {
+            return s1[i] - s2[i]; 
         }
-        if (s1[i] > s2[i]) {
-            return 1;
+        if (s1[i] != s2[i]) {
+            return s1[i] - s2[i];
         }
-    }
-
-    if (l1 < l2) {
-        return -1;
-    }
-    if (l1 > l2) {
-        return 1;
     }
 
     return 0;
@@ -86,16 +85,19 @@ int strCmp (const String s1, const String s2) {
 
 String strCat (String s1, const String s2) {
     assert(s1 != NULL && s2 != NULL && "the string mustnt be NULL\n");
+    
+    printf("%s\n", s2);
 
     int s1len = strLen(s1);
-    int s2len = strLen(s2);
-    
-    for(int i = 0; i < s2len; i++){
+
+    int i = 0;
+
+    for (i = 0; s2[i] != NULLBYTE; i++) {
         s1[i + s1len] = s2[i];
     }
 
-    return 
+    s1[++i + s1len] = NULLBYTE;
+    return s1;
 }
 
-#undef EOF
 #undef NULLBYTE
